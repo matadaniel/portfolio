@@ -1,7 +1,26 @@
 ---
 import Layout from '../layouts/Layout.astro'
+import Section from '../components/Section.astro'
 ---
 
 <Layout title="Daniel Mata">
-  <main></main>
+  <main class="flex flex-col items-center">
+    <Section>
+      <div class="not-prose">
+        <h2 class="text-4xl sm:text-6xl font-bold animate-appear mt-[36.5vh]">
+          Hey! <span class="inline-block font-normal animate-wave">👋</span>
+        </h2>
+        <h3 class="mt-8 opacity-0 text-2xl sm:text-4xl animate-[appear_2s_0.5s_forwards]">
+          My name is
+        </h3>
+        <h1 class="opacity-0 text-7xl sm:text-9xl italic font-bold animate-[appear_2s_1s_forwards]">
+          DANIEL<br />MATA
+        </h1>
+        <p class="opacity-0 mt-8 text-xl sm:text-3xl animate-[appear_2s_1.5s_forwards]">
+          I am a full-stack developer focused on bringing great experiences to the web. I specialize
+          in deploying decentralized applications onto the blockchain.
+        </p>
+      </div>
+    </Section>
+  </main>
 </Layout>
