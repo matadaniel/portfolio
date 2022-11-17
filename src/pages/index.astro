@@ -7,6 +7,11 @@ const contents = await Astro.glob('../contents/*.mdx')
 ---
 
 <Layout title="Daniel Mata">
+  <div
+    class="flex items-center justify-center h-screen w-[50vw] min-w-[50vh] fixed -z-10 top-0 right-1/2 translate-x-1/2 sm:right-0 sm:transform-none"
+  >
+    <canvas class="w-0 h-0"></canvas>
+  </div>
   <main class="flex flex-col items-center">
     <Section>
       <div class="not-prose">
@@ -34,3 +39,7 @@ const contents = await Astro.glob('../contents/*.mdx')
     }
   </main>
 </Layout>
+
+<script>
+  import '../components/root'
+</script>
