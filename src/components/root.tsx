@@ -10,6 +10,7 @@ import {
 } from 'three'
 import { extend, createRoot } from '@react-three/fiber'
 import Diamond from './Diamond'
+import Bulb from './Bulb'
 
 extend({
   PointLight,
@@ -35,6 +36,7 @@ window.dispatchEvent(new Event('resize'))
 
 root.render(
   <>
+    <Bulb />
     <directionalLight position={[-1, -1, 1]} intensity={6} />
     <directionalLight position={[-1, 1, 1]} intensity={2} />
     <pointLight />
