@@ -4,6 +4,7 @@ specifiers:
   '@astrojs/react': ^1.2.2
   '@astrojs/tailwind': ^2.1.1
   '@fontsource/montserrat': ^4.5.13
+  '@icons-pack/react-simple-icons': ^6.1.0
   '@react-three/drei': ^9.38.1
   '@react-three/fiber': ^8.8.10
   '@tailwindcss/typography': ^0.5.8
@@ -22,6 +23,7 @@ dependencies:
   '@astrojs/react': 1.2.2_nsgh7lqw2e2kb5wanadocemtdi
   '@astrojs/tailwind': 2.1.1_tailwindcss@3.2.1
   '@fontsource/montserrat': 4.5.13
+  '@icons-pack/react-simple-icons': 6.1.0_react@18.2.0
   '@react-three/drei': 9.38.1_ibn4rpojegmufat3mla2cu2u4i
   '@react-three/fiber': 8.8.10_mjlgqb43i6mvslmnwgzrdumoh4
   '@types/react': 18.0.24
@@ -487,6 +489,14 @@ packages:
 
   /@fontsource/montserrat/4.5.13:
     resolution: {integrity: sha512-/XlcNsMFjdWX4Away8Ax/4NgND8Ckk9gVDwgz1sfxF6h+gFHChLOV0IvPrUfCQjZ1F35igg+nR9bSxmjsYEskQ==}
+    dev: false
+
+  /@icons-pack/react-simple-icons/6.1.0_react@18.2.0:
+    resolution: {integrity: sha512-ibidZFMK6Iv2cbWy/B9cLx8gSdTB0bWsO2Drvi3LqIMELi09BFApUQ8T3sicByBP5xRpB7I9YPzabkJfHVdCZg==}
+    peerDependencies:
+      react: ^16.13 || ^17 || ^18
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /@jridgewell/gen-mapping/0.1.1:
