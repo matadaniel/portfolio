@@ -1,6 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import Section from '../components/Section.astro'
+import { iconComponents } from '../components/icons'
+
+const contents = await Astro.glob('../contents/*.mdx')
 ---
 
 <Layout title="Daniel Mata">
@@ -22,5 +25,12 @@ import Section from '../components/Section.astro'
         </p>
       </div>
     </Section>
+    {
+      contents.map(content => (
+        <Section>
+          <content.Content components={iconComponents} />
+        </Section>
+      ))
+    }
   </main>
 </Layout>
