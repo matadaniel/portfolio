@@ -1,13 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 36 36">
-  <path fill="#000" d="M22.25 4h-8.5a1 1 0 0 0-.96.73l-5.54 19.4a.5.5 0 0 0 .62.62l5.05-1.44a2 2 0 0 0 1.38-1.4l3.22-11.66a.5.5 0 0 1 .96 0l3.22 11.67a2 2 0 0 0 1.38 1.39l5.05 1.44a.5.5 0 0 0 .62-.62l-5.54-19.4a1 1 0 0 0-.96-.73Z"/>
-  <path fill="url(#gradient)" d="M18 28a7.63 7.63 0 0 1-5-2c-1.4 2.1-.35 4.35.6 5.55.14.17.41.07.47-.15.44-1.8 2.93-1.22 2.93.6 0 2.28.87 3.4 1.72 3.81.34.16.59-.2.49-.56-.31-1.05-.29-2.46 1.29-3.25 3-1.5 3.17-4.83 2.5-6-.67.67-2.6 2-5 2Z"/>
-  <defs>
-    <linearGradient id="gradient" x1="16" x2="16" y1="32" y2="24" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#000"/>
-      <stop offset="1" stop-color="#000" stop-opacity="0"/>
-    </linearGradient>
-  </defs>
-	<style>
-    @media (prefers-color-scheme:dark){:root{filter:invert(100%)}}
-  </style>
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg width="26.56" height="29.56" version="1.1" viewBox="0 0 7.0273 7.8211" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(-101.49 -144.59)">
+  <g transform="translate(38.257 65.521)" fill="#fff" stroke="#000" stroke-width=".26458" aria-label="Ð">
+   <path d="m66.399 79.201q1.1324 0 1.9685 0.42333 0.83608 0.42333 1.2912 1.2488 0.46566 0.8255 0.46566 2.032 0 1.9156-1.0477 2.8892-1.0372 0.96308-2.9104 0.96308h-2.0214v-3.3232h-0.78316v-0.8255h0.78316v-3.4078zm-0.13758 0.81491h-1.1642v2.5929h1.8838v0.8255h-1.8838v2.5082h0.9525q3.0692 0 3.0692-3.0057 0-1.5134-0.75141-2.2119-0.75142-0.70908-2.1061-0.70908z"/>
+  </g>
+ </g>
 </svg>
