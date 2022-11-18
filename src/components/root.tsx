@@ -34,6 +34,8 @@ window.addEventListener('resize', () =>
 
 window.dispatchEvent(new Event('resize'))
 
+document.getElementById('loading-bar')!.remove()
+
 root.render(
   <>
     <Bulb />

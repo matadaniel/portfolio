@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import Section from '../components/Section.astro'
+import LoadingBar from '../components/LoadingBar.astro'
 import { iconComponents } from '../components/icons'
 
 const contents = await Astro.glob('../contents/*.mdx')
@@ -10,6 +11,7 @@ const contents = await Astro.glob('../contents/*.mdx')
   <div
     class="flex items-center justify-center h-screen w-[50vw] min-w-[50vh] fixed -z-10 top-0 right-1/2 translate-x-1/2 sm:right-0 sm:transform-none"
   >
+    <LoadingBar />
     <canvas class="w-0 h-0"></canvas>
   </div>
   <main class="flex flex-col items-center">
