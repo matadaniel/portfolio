@@ -8,6 +8,9 @@ module.exports = {
       fontFamily: {
         sans: ['MontserratVariable', ...defaultTheme.fontFamily.sans],
       },
+      colors: {
+        accent: '#627eea',
+      },
       keyframes: {
         appear: {
           '0%': { opacity: 0, transform: 'translateX(20vw)' },

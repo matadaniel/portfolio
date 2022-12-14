@@ -40,6 +40,13 @@ const contents = await Astro.glob('../contents/*.mdx')
       ))
     }
   </main>
+  <div class="fixed top-0 right-0">
+    <a
+      href="/contact"
+      class="border-4 rounded px-2 py-1 m-5 border-accent [&:link]:text-accent visited:text-accent shadow-[0_0_10px_theme(colors.accent),_inset_0_0_5px_theme(colors.accent)] [text-shadow:_0_0_10px_theme(colors.accent)] before:hidden after:hidden bg-[rgb(20,20,20)]/75 text-xl sm:text-2xl font-bold"
+      >CONTACT ME</a
+    >
+  </div>
 </Layout>
 
 <script>
