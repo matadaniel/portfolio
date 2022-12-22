@@ -50,5 +50,5 @@ const contents = await Astro.glob('../contents/*.mdx')
 </Layout>
 
 <script>
-  import '../components/root'
+  setTimeout(() => import('../components/root'), 3500)
 </script>
