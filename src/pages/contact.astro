@@ -1,0 +1,49 @@
+---
+import Layout from '../layouts/Layout.astro'
+import LoadingBar from '../components/LoadingBar.astro'
+---
+
+<Layout title="Contact Me">
+  <div
+    class="flex items-center justify-center h-screen w-[50vw] min-w-[50vh] fixed -z-10 top-0 right-1/2 translate-x-1/2 sm:right-0 sm:transform-none"
+  >
+    <LoadingBar />
+    <canvas class="w-0 h-0"></canvas>
+  </div>
+  <main class="flex flex-col items-center mt-[25vh] mx-4 mb-16">
+    <h1 class="mb-20 font-semibold text-4xl text-center leading-normal">
+      Let's get in touch! <span class="inline-block font-normal animate-shake">🤝</span>
+    </h1>
+    <form class="text-xl w-[65ch] max-w-full" netlify netlify-honeypot name="contact" method="POST">
+      <p class="hidden">
+        <label>
+          Don’t fill this out if you’re human: <input name="bot-field" />
+        </label>
+      </p>
+      <input type="hidden" name="form-name" value="contact" />
+      <label for="email">Email</label>
+      <input
+        class="block rounded mb-16 px-2 py-1 bg-neutral-800"
+        id="email"
+        type="email"
+        name="email"
+        required
+      />
+      <label for="message">Message</label>
+      <textarea
+        class="block rounded mb-16 p-2 bg-neutral-800 w-full"
+        id="message"
+        name="message"
+        required
+        rows="5"></textarea>
+      <button
+        class="border-2 rounded px-2 py-1 bg-[rgb(20,20,20)]/75 font-semibold float-right"
+        type="submit">Submit</button
+      >
+    </form>
+  </main>
+</Layout>
+
+<script>
+  setTimeout(() => import('../components/contactRoot'), 1000)
+</script>

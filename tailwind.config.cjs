@@ -19,10 +19,14 @@ module.exports = {
         wave: {
           '0%': { transform: 'rotate(90deg)' },
         },
+        shake: {
+          '50%': { transform: 'translateY(-10px)' },
+        },
       },
       animation: {
         appear: 'appear 2s',
         wave: 'wave 2s cubic-bezier(1, 0, 0.5, 1)',
+        shake: 'shake 1s',
       },
       typography: {
         DEFAULT: {
