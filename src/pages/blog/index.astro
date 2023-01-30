@@ -13,13 +13,16 @@ const blogEntries = await getCollection('blog')
         blogEntries.map(blogPostEntry => (
           <li>
             <a href={`/blog/${blogPostEntry.slug}`}>{blogPostEntry.data.title}</a>
-            <br />
-            <time
-              class="text-xs sm:text-base"
-              datetime={blogPostEntry.data.publishDate.toISOString()}
-            >
-              {blogPostEntry.data.publishDate.toDateString()}
-            </time>
+            <p>
+              {blogPostEntry.data.description}
+              <br />
+              <time
+                class="text-xs sm:text-base"
+                datetime={blogPostEntry.data.publishDate.toISOString()}
+              >
+                {blogPostEntry.data.publishDate.toDateString()}
+              </time>
+            </p>
           </li>
         ))
       }
