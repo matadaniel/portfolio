@@ -3,8 +3,10 @@ import Layout from '../layouts/Layout.astro'
 import Section from '../components/Section.astro'
 import LoadingBar from '../components/LoadingBar.astro'
 import { iconComponents } from '../components/icons'
+import { getCollection } from 'astro:content'
 
-const contents = await Astro.glob('../contents/*.mdx')
+const homeEntries = await getCollection('home')
+const contents = await Promise.all(homeEntries.map(entry => entry.render()))
 ---
 
 <Layout title="Daniel Mata">

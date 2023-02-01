@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content'
+import Section from '../../components/Section.astro'
+import Layout from '../../layouts/Layout.astro'
+
+const blogEntries = await getCollection('blog')
+---
+
+<Layout title="Blog | Daniel Mata">
+  <Section class="my-0">
+    <ul class="block max-w-none">
+      {
+        blogEntries.map(blogPostEntry => {
+          const date = blogPostEntry.data.updateDate ?? blogPostEntry.data.publishDate
+
+          return (
+            <li>
+              <a href={`/blog/${blogPostEntry.slug}`}>{blogPostEntry.data.title}</a>
+              <p>
+                {blogPostEntry.data.description}
+                <br />
+                <time class="text-xs sm:text-base" datetime={date.toISOString()}>
+                  {date.toDateString()}
+                </time>
+              </p>
+            </li>
+          )
+        })
+      }
+    </ul>
+  </Section>
+</Layout>

@@ -1,0 +1,28 @@
+---
+import { CollectionEntry, getCollection } from 'astro:content'
+import Section from '../../components/Section.astro'
+import Layout from '../../layouts/Layout.astro'
+
+export async function getStaticPaths() {
+  const blogEntries = await getCollection('blog')
+  return blogEntries.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }))
+}
+
+interface Props {
+  entry: CollectionEntry<'blog'>
+}
+
+const { entry } = Astro.props
+const { Content } = await entry.render()
+---
+
+<Layout title={`${entry.data.title} | Daniel Mata`}>
+  <main class="flex flex-col items-center">
+    <Section class="my-0 py-32">
+      <Content />
+    </Section>
+  </main>
+</Layout>
