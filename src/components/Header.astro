@@ -1,3 +1,26 @@
-<a href="/" class="!absolute m-4 before:hidden after:hidden"
-  ><img src="/favicon.svg" width="80" height="80" alt="logo" />
-</a>
+<header class="fixed top-0 z-10 h-24 w-full bg-white/5 backdrop-blur sm:h-32">
+  <nav class="container mx-auto flex h-full flex-wrap items-center justify-between">
+    <div class="ml-5 flex items-end gap-5">
+      <div class="group">
+        <a
+          href="/"
+          class="transition-transform will-change-transform before:hidden after:hidden group-hover:-translate-y-2 sm:m-4"
+          ><img
+            class="h-10 w-10 sm:h-20 sm:w-20"
+            src="/favicon.svg"
+            width="80"
+            height="80"
+            alt="logo"
+          />
+        </a>
+      </div>
+      <div class="group">
+        <a
+          href="/blog"
+          class="text-4xl font-semibold transition-transform will-change-transform group-hover:-translate-y-2 sm:m-4 sm:text-6xl"
+          >Blog</a
+        >
+      </div>
+    </div>
+  </nav>
+</header>
