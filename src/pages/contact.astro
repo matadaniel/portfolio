@@ -5,16 +5,16 @@ import LoadingBar from '../components/LoadingBar.astro'
 
 <Layout title="Contact Me">
   <div
-    class="flex items-center justify-center h-screen w-[50vw] min-w-[50vh] fixed -z-10 top-0 right-1/2 translate-x-1/2 sm:right-0 sm:transform-none"
+    class="fixed top-0 right-1/2 -z-10 flex h-screen w-[50vw] min-w-[50vh] translate-x-1/2 items-center justify-center sm:right-0 sm:transform-none"
   >
     <LoadingBar />
-    <canvas class="w-0 h-0"></canvas>
+    <canvas class="h-0 w-0"></canvas>
   </div>
-  <main class="flex flex-col items-center mx-4 mb-16">
-    <h1 class="mb-20 font-semibold text-4xl text-center leading-normal mt-[25vh]">
-      Let's get in touch! <span class="inline-block font-normal animate-shake">🤝</span>
+  <main class="mx-4 mb-16 flex flex-col items-center">
+    <h1 class="mb-20 mt-[25vh] text-center text-4xl font-semibold leading-normal">
+      Let's get in touch! <span class="inline-block animate-shake font-normal">🤝</span>
     </h1>
-    <form class="text-xl w-[65ch] max-w-full" netlify netlify-honeypot name="contact" method="POST">
+    <form class="w-[65ch] max-w-full text-xl" netlify netlify-honeypot name="contact" method="POST">
       <p class="hidden">
         <label>
           Don’t fill this out if you’re human: <input name="bot-field" />
@@ -23,7 +23,7 @@ import LoadingBar from '../components/LoadingBar.astro'
       <input type="hidden" name="form-name" value="contact" />
       <label for="email">Email</label>
       <input
-        class="block rounded mb-16 px-2 py-1 bg-neutral-800"
+        class="mb-16 block rounded bg-neutral-800 px-2 py-1"
         id="email"
         type="email"
         name="email"
@@ -31,13 +31,13 @@ import LoadingBar from '../components/LoadingBar.astro'
       />
       <label for="message">Message</label>
       <textarea
-        class="block rounded mb-16 p-2 bg-neutral-800 w-full"
+        class="mb-16 block w-full rounded bg-neutral-800 p-2"
         id="message"
         name="message"
         required
         rows="5"></textarea>
       <button
-        class="border-2 rounded px-2 py-1 bg-[rgb(20,20,20)]/75 font-semibold float-right"
+        class="float-right rounded border-2 bg-[rgb(20,20,20)]/75 px-2 py-1 font-semibold"
         type="submit">Submit</button
       >
     </form>

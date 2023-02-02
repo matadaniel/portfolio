@@ -11,24 +11,24 @@ const contents = await Promise.all(homeEntries.map(entry => entry.render()))
 
 <Layout title="Daniel Mata">
   <div
-    class="flex items-center justify-center h-screen w-[50vw] min-w-[50vh] fixed -z-10 top-0 right-1/2 translate-x-1/2 sm:right-0 sm:transform-none"
+    class="fixed top-0 right-1/2 -z-10 flex h-screen w-[50vw] min-w-[50vh] translate-x-1/2 items-center justify-center sm:right-0 sm:transform-none"
   >
     <LoadingBar />
-    <canvas class="w-0 h-0"></canvas>
+    <canvas class="h-0 w-0"></canvas>
   </div>
   <main class="flex flex-col items-center">
     <Section>
       <div class="not-prose">
-        <h2 class="text-4xl sm:text-6xl font-bold animate-appear mt-[36.5vh]">
-          Hey! <span class="inline-block font-normal animate-wave">👋</span>
+        <h2 class="mt-[36.5vh] animate-appear text-4xl font-bold sm:text-6xl">
+          Hey! <span class="inline-block animate-wave font-normal">👋</span>
         </h2>
-        <h3 class="mt-8 opacity-0 text-2xl sm:text-4xl animate-[appear_2s_0.5s_forwards]">
+        <h3 class="mt-8 animate-[appear_2s_0.5s_forwards] text-2xl opacity-0 sm:text-4xl">
           My name is
         </h3>
-        <h1 class="opacity-0 text-7xl sm:text-9xl italic font-bold animate-[appear_2s_1s_forwards]">
+        <h1 class="animate-[appear_2s_1s_forwards] text-7xl font-bold italic opacity-0 sm:text-9xl">
           DANIEL<br />MATA
         </h1>
-        <p class="opacity-0 mt-8 text-xl sm:text-3xl animate-[appear_2s_1.5s_forwards]">
+        <p class="mt-8 animate-[appear_2s_1.5s_forwards] text-xl opacity-0 sm:text-3xl">
           I am a full-stack developer focused on bringing great experiences to the web. I specialize
           in deploying decentralized applications onto the blockchain.
         </p>
@@ -45,7 +45,7 @@ const contents = await Promise.all(homeEntries.map(entry => entry.render()))
   <div class="fixed top-0 right-0">
     <a
       href="/contact"
-      class="border-4 rounded px-2 py-1 m-5 border-accent [&:link]:text-accent visited:text-accent shadow-[0_0_10px_theme(colors.accent),_inset_0_0_5px_theme(colors.accent)] [text-shadow:_0_0_10px_theme(colors.accent)] before:hidden after:hidden bg-[rgb(20,20,20)]/75 text-xl sm:text-2xl font-bold"
+      class="m-5 rounded border-4 border-accent bg-[rgb(20,20,20)]/75 px-2 py-1 text-xl font-bold shadow-[0_0_10px_theme(colors.accent),_inset_0_0_5px_theme(colors.accent)] [text-shadow:_0_0_10px_theme(colors.accent)] before:hidden after:hidden visited:text-accent sm:text-2xl [&:link]:text-accent"
       >CONTACT ME</a
     >
   </div>
