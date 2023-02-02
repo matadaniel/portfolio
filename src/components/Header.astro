@@ -1,4 +1,8 @@
-<header class="fixed top-0 z-10 h-24 w-full bg-white/5 backdrop-blur sm:h-32">
+<header
+  class={`${
+    Astro.url.pathname.startsWith('/blog') ? 'sticky' : 'fixed'
+  } top-0 z-10 h-24 w-full bg-white/5 backdrop-blur sm:h-32`}
+>
   <nav class="container mx-auto flex h-full flex-wrap items-center justify-between">
     <div class="ml-5 flex items-end gap-5">
       <div class="group">
