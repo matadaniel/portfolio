@@ -39,6 +39,9 @@ module.exports = {
             a: { 'text-decoration-line': 'none' },
             'ul > li > *:first-child': { margin: '1em 0' },
             img: { margin: 0 },
+            'code::before': { content: 'none' },
+            'code::after': { content: 'none' },
+            code: { backgroundColor: '#272822', padding: '0 0.25rem', borderRadius: '0.25rem' },
           },
         },
         xl: {
