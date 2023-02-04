@@ -4,7 +4,10 @@ import Section from '../../components/Section.astro'
 import Layout from '../../layouts/Layout.astro'
 
 export async function getStaticPaths() {
-  const blogEntries = await getCollection('blog')
+  const blogEntries = (await getCollection('blog')).sort(
+    (a, b) => a.data.publishDate.getTime() - b.data.publishDate.getTime()
+  )
+
   return blogEntries.map(entry => ({
     params: { slug: entry.slug },
     props: {
