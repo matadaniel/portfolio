@@ -7,15 +7,21 @@ export async function getStaticPaths() {
   const blogEntries = await getCollection('blog')
   return blogEntries.map(entry => ({
     params: { slug: entry.slug },
-    props: { entry },
+    props: {
+      entry,
+      ...(entry.data.series && {
+        series: blogEntries.filter(post => post.data.series === entry.data.series),
+      }),
+    },
   }))
 }
 
 interface Props {
   entry: CollectionEntry<'blog'>
+  series?: CollectionEntry<'blog'>[]
 }
 
-const { entry } = Astro.props
+const { entry, series } = Astro.props
 const { Content } = await entry.render()
 ---
 
