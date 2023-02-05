@@ -13,7 +13,10 @@ export async function getStaticPaths() {
     props: {
       entry,
       ...(entry.data.series && {
-        series: blogEntries.filter(post => post.data.series === entry.data.series),
+        series: {
+          name: entry.data.series,
+          entries: blogEntries.filter(post => post.data.series === entry.data.series),
+        },
       }),
     },
   }))
@@ -21,7 +24,7 @@ export async function getStaticPaths() {
 
 interface Props {
   entry: CollectionEntry<'blog'>
-  series?: CollectionEntry<'blog'>[]
+  series?: { name: string; entries: CollectionEntry<'blog'>[] }
 }
 
 const { entry, series } = Astro.props
