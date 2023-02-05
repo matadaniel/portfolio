@@ -42,12 +42,14 @@ module.exports = {
             'code::before': { content: 'none' },
             'code::after': { content: 'none' },
             code: { backgroundColor: '#272822', padding: '0 0.25rem', borderRadius: '0.25rem' },
+            pre: { lineHeight: 1.2 },
           },
         },
         xl: {
           css: {
             'ul > li > *:first-child': { margin: '1em 0' },
             img: { margin: 0 },
+            pre: { lineHeight: 1.2 },
           },
         },
       },
