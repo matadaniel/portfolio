@@ -5,7 +5,9 @@ import Layout from '../../layouts/Layout.astro'
 
 export async function getStaticPaths() {
   const blogEntries = (await getCollection('blog')).sort(
-    (a, b) => a.data.publishDate.getTime() - b.data.publishDate.getTime()
+    (a, b) =>
+      (a.data.isDraft ? a.data.draftDate : a.data.publishDate).getTime() -
+      (b.data.isDraft ? b.data.draftDate : b.data.publishDate).getTime()
   )
 
   return blogEntries.map(entry => ({
