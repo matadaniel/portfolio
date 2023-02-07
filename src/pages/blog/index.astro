@@ -15,18 +15,26 @@ const blogEntries = (await getCollection('blog')).sort(
     <ul class="block max-w-none">
       {
         blogEntries.map(blogPostEntry => {
-          const date = blogPostEntry.data.updateDate ?? blogPostEntry.data.publishDate
+          const date = blogPostEntry.data.isDraft
+            ? blogPostEntry.data.draftDate
+            : blogPostEntry.data.publishDate
 
           return (
             <li>
-              <a href={`/blog/${blogPostEntry.slug}`}>{blogPostEntry.data.title}</a>
-              <p>
-                {blogPostEntry.data.description}
-                <br />
-                <time class="text-xs sm:text-base" datetime={date.toISOString()}>
-                  {date.toDateString()}
-                </time>
-              </p>
+              {blogPostEntry.data.isDraft ? (
+                <span class="font-medium">{blogPostEntry.data.title} (coming soon)</span>
+              ) : (
+                <a href={`/blog/${blogPostEntry.slug}`}>{blogPostEntry.data.title}</a>
+              )}
+              {!blogPostEntry.data.isDraft && (
+                <p>
+                  {blogPostEntry.data.description}
+                  <br />
+                  <time class="text-xs sm:text-base" datetime={date.toISOString()}>
+                    {date.toDateString()}
+                  </time>
+                </p>
+              )}
             </li>
           )
         })
