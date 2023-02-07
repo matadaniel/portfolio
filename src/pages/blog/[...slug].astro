@@ -10,7 +10,9 @@ export async function getStaticPaths() {
       (b.data.isDraft ? b.data.draftDate : b.data.publishDate).getTime()
   )
 
-  return blogEntries.map(entry => ({
+  const filteredBlogEntries = blogEntries.filter(entry => !entry.data.isDraft)
+
+  return filteredBlogEntries.map(entry => ({
     params: { slug: entry.slug },
     props: {
       entry,
