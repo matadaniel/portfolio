@@ -38,6 +38,30 @@ const { Content } = await entry.render()
 <Layout title={`${entry.data.title} | Daniel Mata`}>
   <main class="flex flex-col items-center">
     <Section class="my-0 py-32">
+      {
+        series && (
+          <div class="mb-8 pb-8">
+            This post is part of the {series.name} series:
+            <ol>
+              {series.entries.map(post => {
+                const pathname = `/blog/${post.slug}`
+
+                return (
+                  <li>
+                    {pathname === Astro.url.pathname ? (
+                      <span class="font-medium">{post.data.title} &larr;</span>
+                    ) : post.data.isDraft ? (
+                      <span class="font-medium">{post.data.title} (coming soon)</span>
+                    ) : (
+                      <a href={pathname}>{post.data.title}</a>
+                    )}
+                  </li>
+                )
+              })}
+            </ol>
+          </div>
+        )
+      }
       <Content />
     </Section>
   </main>
