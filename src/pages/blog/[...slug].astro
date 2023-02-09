@@ -39,7 +39,7 @@ const { Content } = await entry.render()
   <main class="flex flex-col items-center">
     <Section class="my-0 py-32">
       {
-        series && (
+        series && series.entries.length > 1 && (
           <div class="mb-8 pb-8">
             This post is part of the {series.name} series:
             <ol>
