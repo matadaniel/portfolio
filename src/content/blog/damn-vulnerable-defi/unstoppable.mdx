@@ -1,0 +1,116 @@
+---
+isDraft: false
+title: 'Damn Vulnerable DeFi Challenge #1 Solution'
+description: 'Introduction and solution to the new version of Damn Vulnerable DeFi Challenge #1: Unstoppable'
+tags: ['defi', 'solidity']
+series: 'Damn Vulnerable DeFi'
+publishDate: 'Feb 08, 2023'
+---
+
+# {frontmatter.title}
+
+> Damn Vulnerable DeFi is, and forever will be, an educational resource for the community. It is intended to be a safe playground to train security researchers that will help protect Ethereum applications. In solving these challenges, you may learn how to exploit vulnerabilities in smart contracts. They might resemble the ones you’ll uncover during your own research of contracts in production. If that’s the case, always follow each project’s responsible disclosure processes, usually via bug bounty programs or security contacts.
+
+-- <cite>[@tinchoabbate](https://twitter.com/@tinchoabbate), creator of [damnvulnerabledefi.xyz](https://www.damnvulnerabledefi.xyz/)</cite>
+
+---
+
+_Published {frontmatter.publishDate}_
+
+[@tinchoabbate](https://twitter.com/@tinchoabbate) recently released a new version of Damn Vulnerable DeFi, which introduces ERC implementations, gas optimizations, and assembly. It also welcomes more libraries. Solmate and Solady join OpenZeppelin Contracts in the wargame. I am very experienced with OpenZeppelin Contracts, but I am very new to Solmate and Solady.
+
+> ## Challenge #1 - Unstoppable
+>
+> There’s a tokenized vault with a million DVT tokens deposited. It’s offering flash loans for free, until the grace period ends.
+>
+> To pass the challenge, make the vault stop offering flash loans.
+>
+> You start with 10 DVT tokens in balance.
+
+Let's take a look at the `UnstoppableVault.sol` contract. More specifically, let's focus on its `flashLoan` function. It calls `onFlashLoan` on any `IERC3156FlashBorrower` that is passed as an argument. We can use this as an entry point and execute our own arbitrary code, and all we have to do is return `keccak256("IERC3156FlashBorrower.onFlashLoan")`!
+
+```solidity
+// contracts/unstoppable/UnstoppableVault.sol
+
+function flashLoan(
+    IERC3156FlashBorrower receiver,
+    address _token,
+    uint256 amount,
+    bytes calldata data
+) external returns (bool) {
+    if (amount == 0) revert InvalidAmount(0); // fail early
+    if (address(asset) != _token) revert UnsupportedCurrency(); // enforce ERC3156 requirement
+    uint256 balanceBefore = totalAssets();
+    if (convertToShares(totalSupply) != balanceBefore)
+        revert InvalidBalance(); // enforce ERC4626 requirement
+    uint256 fee = flashFee(_token, amount);
+    // transfer tokens out + execute callback on receiver
+    ERC20(_token).safeTransfer(address(receiver), amount);
+    // callback must return magic value, otherwise assume it failed
+    if (
+        receiver.onFlashLoan(
+            msg.sender,
+            address(asset),
+            amount,
+            fee,
+            data
+        ) != keccak256("IERC3156FlashBorrower.onFlashLoan")
+    ) revert CallbackFailed();
+    // pull amount + fee from receiver, then pay the fee to the recipient
+    ERC20(_token).safeTransferFrom(
+        address(receiver),
+        address(this),
+        amount + fee
+    );
+    ERC20(_token).safeTransfer(feeRecipient, fee);
+    return true;
+}
+```
+
+If we can make the vault revert on every call to `flashLoan`, it will be unable to offer any more flash loans. The `InvalidAmount` error can always be avoided since `amount` is specified by the caller. The `UnsupportedCurrency` error is also avoidable for the same reason (`asset` is an immutable variable set as `DVT` in the constructor). The `InvalidBalance` error, however, stands out. Its guard clause uses the return value of the `totalAssets` function:
+
+```solidity
+// contracts/unstoppable/UnstoppableVault.sol
+
+function totalAssets() public view override returns (uint256) {
+    assembly {
+        // better safe than sorry
+        if eq(sload(0), 2) {
+            mstore(0x00, 0xed3ba6a6)
+            revert(0x1c, 0x04)
+        }
+    }
+    return asset.balanceOf(address(this));
+}
+```
+
+The function starts with what looks like a reentrancy guard. If there is no reentrancy, it returns the vault's `DVT` balance. `flashLoan` then compares that to the total supply of `ERC4626` shares with the help of the `convertToShares` function from the `ERC4626` contract:
+
+```solidity
+// node_modules/solmate/src/mixins/ERC4626.sol
+
+function convertToShares(
+    uint256 assets
+) public view virtual returns (uint256) {
+    uint256 supply = totalSupply; // Saves an extra SLOAD if totalSupply is non-zero.
+
+    return
+        supply == 0
+            ? assets
+            : assets.mulDivDown(supply, totalAssets());
+}
+```
+
+This function uses `totalAssets` to calculate the amount of shares for a given amount of `assets`. This is totally fine, since the vault's `DVT` balance and the total supply of shares are perfectly balanced, as all things should be. It remains in balance because shares are minted every time the `deposit` function (from the `ERC4626` contract) is called. However, a regular `ERC20` token, much like `ETH`, can be transferred to any address, whether they want to accept it or not.
+
+We can destroy the vault's delicate balance by simply transferring the `DVT` tokens we have to the vault! In fact, all we need is a single unit of `DVT`, and we can keep the rest for ourselves!
+
+```js
+// test/unstoppable/unstoppable.challenge.js
+
+it('Execution', async function () {
+  await token.connect(player).transfer(vault.address, 1)
+})
+```
+
+Now the `InvalidBalance` error's condition is met, causing `flashLoan` to revert when it is called. In other words, the vault is now unable to offer flash loans.
