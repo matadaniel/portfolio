@@ -12,7 +12,7 @@ export async function getStaticPaths() {
 
   const filteredBlogEntries = blogEntries.filter(entry => !entry.data.isDraft)
 
-  return filteredBlogEntries.map(entry => ({
+  return (import.meta.env.PROD ? filteredBlogEntries : blogEntries).map(entry => ({
     params: { slug: entry.slug },
     props: {
       entry,
