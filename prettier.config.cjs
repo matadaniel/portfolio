@@ -14,6 +14,12 @@ module.exports = {
         parser: 'astro',
       },
     },
+    {
+      files: '*.mdx',
+      options: {
+        printWidth: 65,
+      },
+    },
   ],
   pluginSearchDirs: false,
 }
