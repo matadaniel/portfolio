@@ -41,7 +41,7 @@ module.exports = {
             img: { margin: 0 },
             'code::before': { content: 'none' },
             'code::after': { content: 'none' },
-            code: { backgroundColor: '#272822', padding: '0 0.25rem', borderRadius: '0.25rem' },
+            code: { backgroundColor: '#1E1E1E', padding: '0 0.25rem', borderRadius: '0.25rem' },
             pre: { lineHeight: 1.2 },
           },
         },

@@ -8,5 +8,5 @@ import mdx from '@astrojs/mdx'
 // https://astro.build/config
 export default defineConfig({
   integrations: [react(), tailwind(), mdx()],
-  markdown: { shikiConfig: { theme: 'monokai', wrap: true } },
+  markdown: { shikiConfig: { theme: 'dark-plus', wrap: true } },
 })
