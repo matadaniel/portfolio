@@ -62,7 +62,7 @@ const { Content } = await entry.render()
           </div>
         )
       }
-      <Content />
+      <Content date={entry.data.isDraft ? entry.data.draftDate : entry.data.publishDate} />
     </Section>
   </main>
 </Layout>
