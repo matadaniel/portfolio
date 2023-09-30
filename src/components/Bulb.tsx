@@ -32,7 +32,7 @@ const Bulb = () => {
     <pointLight color="white" ref={ref} intensity={5}>
       <mesh>
         <sphereGeometry args={[0.06, 16, 8]} />
-        <meshStandardMaterial emissive={0xffffff} />
+        <meshBasicMaterial color={0x333333} />
       </mesh>
     </pointLight>
   )
