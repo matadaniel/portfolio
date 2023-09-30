@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import Section from '../components/Section.astro'
-import LoadingBar from '../components/LoadingBar.astro'
 import { iconComponents } from '../components/icons'
 import { getCollection } from 'astro:content'
 
@@ -10,12 +9,6 @@ const contents = await Promise.all(homeEntries.map(entry => entry.render()))
 ---
 
 <Layout title="Daniel Mata">
-  <div
-    class="fixed top-0 right-1/2 -z-10 mt-24 flex h-screen w-[50vw] min-w-[50vh] translate-x-1/2 items-center justify-center sm:right-0 sm:mt-32 sm:transform-none"
-  >
-    <LoadingBar />
-    <canvas class="h-0 w-0"></canvas>
-  </div>
   <main class="flex flex-col items-center">
     <Section>
       <div class="not-prose">
