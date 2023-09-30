@@ -35,6 +35,7 @@ root.render(
   <>
     <directionalLight position={[-1, -1, 1]} intensity={6} />
     <directionalLight position={[-1, 1, 1]} intensity={2} />
+    <pointLight position={[1, 2, 0]} intensity={2} color={0x627eea} />
     <pointLight />
     <Diamond />
   </>
