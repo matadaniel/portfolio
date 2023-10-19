@@ -5,7 +5,6 @@ const dateString = z.string().transform(str => new Date(str))
 const baseBlogSchema = z
   .object({
     title: z.string(),
-    series: z.string().optional(),
   })
   .strict()
 

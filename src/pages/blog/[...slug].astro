@@ -1,5 +1,6 @@
 ---
-import { type CollectionEntry, getCollection } from 'astro:content'
+import type { InferGetStaticPropsType } from 'astro'
+import { getCollection } from 'astro:content'
 import Section from '../../components/Section.astro'
 import Layout from '../../layouts/Layout.astro'
 
@@ -10,28 +11,43 @@ export async function getStaticPaths() {
       (b.data.isDraft ? b.data.draftDate : b.data.publishDate).getTime()
   )
 
+  const series: Record<string, { name: string; entries: typeof blogEntries }> = {}
+  for (const entry of blogEntries) {
+    const path = entry.id.split('/')
+
+    if (path.length > 1) {
+      if (series[path[0]]) series[path[0]].entries.push(entry)
+      else
+        series[path[0]] = {
+          name: path[0]
+            .split('-')
+            .map(word => word[0].toUpperCase() + word.slice(1))
+            .join(' '),
+          entries: [entry],
+        }
+    }
+  }
+
+  const getSeries = (id: string) => {
+    const path = id.split('/')
+
+    if (path.length > 1) {
+      return { series: series[path[0]] }
+    }
+  }
+
   const filteredBlogEntries = blogEntries.filter(entry => !entry.data.isDraft)
 
   return (import.meta.env.PROD ? filteredBlogEntries : blogEntries).map(entry => ({
     params: { slug: entry.slug },
     props: {
       entry,
-      ...(entry.data.series && {
-        series: {
-          name: entry.data.series,
-          entries: blogEntries.filter(post => post.data.series === entry.data.series),
-        },
-      }),
+      ...getSeries(entry.id),
     },
   }))
 }
 
-interface Props {
-  entry: CollectionEntry<'blog'>
-  series?: { name: string; entries: CollectionEntry<'blog'>[] }
-}
-
-const { entry, series } = Astro.props
+const { entry, series } = Astro.props as InferGetStaticPropsType<typeof getStaticPaths>
 const { Content } = await entry.render()
 ---
 
