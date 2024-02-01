@@ -31,13 +31,7 @@ module.exports = {
       typography: {
         DEFAULT: {
           css: {
-            ul: {
-              'max-width': 360,
-              display: 'grid',
-              'grid-template-columns': 'repeat(2, minmax(0, 1fr))',
-            },
             a: { 'text-decoration-line': 'none' },
-            'ul > li > *:first-child': { margin: '1em 0' },
             img: { margin: 0 },
             'code::before': { content: 'none' },
             'code::after': { content: 'none' },
@@ -47,7 +41,6 @@ module.exports = {
         },
         xl: {
           css: {
-            'ul > li > *:first-child': { margin: '1em 0' },
             img: { margin: 0 },
             pre: { lineHeight: 1.2 },
           },

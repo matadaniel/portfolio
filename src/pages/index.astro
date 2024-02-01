@@ -1,11 +1,96 @@
 ---
 import Layout from '../layouts/Layout.astro'
 import Section from '../components/Section.astro'
-import { iconComponents } from '../components/icons'
-import { getCollection } from 'astro:content'
+import {
+  SiSolidity,
+  SiNodedotjs,
+  SiNextdotjs,
+  SiTypescript,
+  SiExpress,
+  SiTrpc,
+  SiRust,
+  SiBun,
+  SiDeno,
+  SiReact,
+  SiSass,
+  SiAstro,
+  SiTailwindcss,
+  SiMdx,
+  SiThreedotjs,
+  SiBlender,
+  SiInkscape,
+  SiFigma,
+  SiSvelte,
+  type IconType,
+  SiLinux,
+  SiNeovim,
+  SiKotlin,
+  SiExpo,
+  SiGit,
+  SiGnubash,
+  SiZsh,
+  SiArduino,
+  SiGo,
+  SiShadcnui,
+} from '@icons-pack/react-simple-icons'
+import Foundry from '../components/Foundry'
 
-const homeEntries = await getCollection('home')
-const contents = await Promise.all(homeEntries.map(entry => entry.render()))
+interface Tech {
+  Component?: IconType
+  name: string
+  url: string
+}
+
+const experience: [string, Tech[]][] = [
+  [
+    'for years',
+    [
+      { Component: SiNodedotjs, name: 'Node.js', url: 'https://nodejs.org/' },
+      { Component: SiReact, name: 'React', url: 'https://reactjs.org/' },
+      { Component: SiNextdotjs, name: 'Next.js', url: 'https://nextjs.org/' },
+      { Component: SiTypescript, name: 'TypeScript', url: 'https://www.typescriptlang.org/' },
+      { Component: SiLinux, name: 'Linux', url: 'https://kernel.org/' },
+      { Component: SiGit, name: 'Git', url: 'https://git-scm.com/' },
+      { Component: SiTailwindcss, name: 'Tailwind CSS', url: 'https://tailwindcss.com/' },
+      { Component: SiSass, name: 'Sass', url: 'https://sass-lang.com/' },
+      { Component: SiSolidity, name: 'Solidity', url: 'https://soliditylang.org/' },
+      { name: 'Hardhat', url: 'https://hardhat.org/' },
+      { name: 'ethers', url: 'https://ethers.org/' },
+      { Component: SiNeovim, name: 'Neovim', url: 'https://neovim.io/' },
+      { Component: SiAstro, name: 'Astro', url: 'https://astro.build/' },
+      { Component: SiMdx, name: 'MDX', url: 'https://mdxjs.com/' },
+    ],
+  ],
+  ['for months', [{ Component: SiArduino, name: 'Arduino', url: 'https://www.arduino.cc/' }]],
+  [
+    'for days',
+    [
+      { Component: SiSvelte, name: 'Svelte', url: 'https://svelte.dev/' },
+      { name: 'SvelteKit', url: 'https://kit.svelte.dev/' },
+      { Component: SiExpo, name: 'Expo', url: 'https://expo.dev/' },
+      { name: 'react-three-fiber', url: 'https://docs.pmnd.rs/react-three-fiber' },
+      { Component: SiThreedotjs, name: 'three.js', url: 'https://threejs.org/' },
+      { Component: SiBlender, name: 'Blender', url: 'https://www.blender.org/' },
+      { Component: SiExpress, name: 'Express', url: 'https://expressjs.com/' },
+      { Component: SiInkscape, name: 'Inkscape', url: 'https://inkscape.org/' },
+      { Component: SiGnubash, name: 'Bash', url: 'https://www.gnu.org/software/bash/' },
+      { Component: SiZsh, name: 'Zsh', url: 'https://www.zsh.org/' },
+      { Component: SiKotlin, name: 'Kotlin', url: 'https://kotlinlang.org/' },
+    ],
+  ],
+]
+
+const planOnLearning: Tech[] = [
+  { Component: SiTrpc, name: 'tRPC', url: 'https://trpc.io/' },
+  { Component: SiShadcnui, name: 'shadcn/ui', url: 'https://ui.shadcn.com/' },
+  { name: 'htmx', url: 'https://htmx.org/' },
+  { Component: SiGo, name: 'Go', url: 'https://go.dev/' },
+  { Component: SiRust, name: 'Rust', url: 'https://www.rust-lang.org/' },
+  { Component: SiBun, name: 'Bun', url: 'https://bun.sh/' },
+  { Component: SiFigma, name: 'Figma', url: 'https://www.figma.com/' },
+  { Component: SiDeno, name: 'Deno', url: 'https://deno.land/' },
+  { Component: Foundry as unknown as IconType, name: 'Foundry', url: 'https://getfoundry.sh/' },
+]
 ---
 
 <Layout title="Daniel Mata">
@@ -27,16 +112,100 @@ const contents = await Promise.all(homeEntries.map(entry => entry.render()))
         </p>
       </div>
     </Section>
-    {
-      contents.map(content => (
-        <Section>
-          <content.Content components={iconComponents} />
-        </Section>
-      ))
-    }
+
+    <Section class="w-full">
+      <h1>Tech I've used...</h1>
+      <div
+        class="ml-[5em] flex flex-col border-l-4 [border-image:_linear-gradient(#ffd166,_#06d6a0_66%,_#118ab2)_1]"
+        id="gradient"
+      >
+        {
+          experience.map(([timeSpan, tech]) => (
+            <div class="relative">
+              <small class="absolute -left-[6em] max-w-[5em] font-semibold">{timeSpan}</small>
+              <ul class="max-w-lg">
+                {tech.map(({ Component, name, url }) => (
+                  <li class="inline-block pr-4">
+                    <a href={url}>
+                      {Component ? (
+                        <Component size="1em" color="white" />
+                      ) : (
+                        <span class="text-[gray]">&marker;</span>
+                      )}{' '}
+                      {name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </Section>
+
+    <Section class="w-full">
+      <h1>Tech I plan on learning</h1>
+      <div class="ml-[5em] flex flex-col border-l-4 border-l-[#118ab2]">
+        <ul class="max-w-lg">
+          {
+            planOnLearning.map(({ Component, name, url }) => (
+              <li class="inline-block pr-4">
+                <a href={url}>
+                  {Component ? (
+                    <Component size="1em" color="white" />
+                  ) : (
+                    <span class="text-[gray]">&marker;</span>
+                  )}{' '}
+                  {name}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </Section>
   </main>
 </Layout>
 
 <script>
   setTimeout(() => import('../components/root'), 3500)
+
+  const colorStops = [
+    { r: 0xff, g: 0xd1, b: 0x66, percentage: 0 },
+    { r: 0x06, g: 0xd6, b: 0xa0, percentage: 0.66 },
+    { r: 0x11, g: 0x8a, b: 0xb2, percentage: 1 },
+  ]
+
+  const gradient = document.getElementById('gradient')!
+  const divs = gradient.getElementsByTagName('div')
+  for (let i = 0; i < divs.length; i++) {
+    const div = divs.item(i)!
+    // FIX: content size is relative to font-size,
+    // which changes with .prose media query
+    const small = div.getElementsByTagName('small').item(0)!
+
+    const globalRatio =
+      (div.offsetTop + small.offsetHeight / 2 - gradient.offsetTop) / gradient.offsetHeight
+
+    let startIndex = 0
+    for (let j = colorStops.length - 1; j >= 1; j--) {
+      if (globalRatio >= colorStops[j].percentage) {
+        startIndex = j
+        break
+      }
+    }
+
+    const start = colorStops[startIndex]
+    const end = colorStops[startIndex + 1]
+
+    const ratio = (globalRatio - start.percentage) / (end.percentage - start.percentage)
+
+    const r = Math.floor(start.r + (end.r - start.r) * ratio)
+    const g = Math.floor(start.g + (end.g - start.g) * ratio)
+    const b = Math.floor(start.b + (end.b - start.b) * ratio)
+
+    small.style.color = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b
+      .toString(16)
+      .padStart(2, '0')}`
+  }
 </script>
