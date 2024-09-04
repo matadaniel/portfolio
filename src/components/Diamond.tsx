@@ -9,7 +9,7 @@ const Diamond = () => {
 
   return (
     <Octahedron scale={[1, 2, 1]} ref={ref}>
-      <meshPhongMaterial transparent opacity={0.5} color="rgb(20, 20, 20)" side={DoubleSide} />
+      <meshPhongMaterial transparent opacity={0.5} color="rgb(79, 79, 79)" side={DoubleSide} />
     </Octahedron>
   )
 }
