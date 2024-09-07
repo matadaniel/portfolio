@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
-import { Mesh, OctahedronGeometry, type PointLight } from 'three'
+import { Mesh, OctahedronGeometry } from 'three'
 import { useFrame } from '@react-three/fiber'
 import { Sphere } from '@react-three/drei'
 import Side from './Side'
 
 const Diamond = () => {
   const ref = useRef<Mesh>(null)
-  const bulbRef = useRef<PointLight>(null)
+  const bulbRef = useRef<Mesh>(null)
   const [scroll, setScroll] = useState(
     window.scrollY / (document.body.offsetHeight - window.innerHeight)
   )
@@ -40,11 +40,9 @@ const Diamond = () => {
 
   return (
     <>
-      <pointLight color="white" ref={bulbRef} intensity={5}>
-        <Sphere args={[0.06, 16, 8]}>
-          <meshBasicMaterial color={0x7b7b7b} />
-        </Sphere>
-      </pointLight>
+      <Sphere args={[0.06, 16, 8]} ref={bulbRef}>
+        <meshBasicMaterial color={0x7b7b7b} />
+      </Sphere>
       <mesh geometry={geometry} ref={ref}>
         <Side index={0} rotation={[0, Math.PI / 4, 0]} scroll={scroll}>
           <torusKnotGeometry args={[0.25, 0.1, 256, 16]} />
