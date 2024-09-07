@@ -27,7 +27,7 @@ const Side = ({ children, index, rotation, scroll }: SideProps) => {
         <pointLight color="white" ref={bulbRef} intensity={5} />
         <directionalLight position={[-1, -1, 1]} intensity={6 * Math.PI} />
         <directionalLight position={[-1, 1, 1]} intensity={2 * Math.PI} />
-        <pointLight position={[1, 2, 0]} intensity={4} color={0xacbbf4} />
+        <pointLight position={[1, 2, 0]} intensity={16} color={0xacbbf4} />
         <ambientLight intensity={Math.PI} />
       </group>
 
