@@ -8,6 +8,7 @@ import {
   OctahedronGeometry,
   MeshPhongMaterial,
   AmbientLight,
+  Group,
 } from 'three'
 import { extend, createRoot } from '@react-three/fiber'
 import Diamond from './Diamond'
@@ -21,6 +22,7 @@ extend({
   OctahedronGeometry,
   MeshPhongMaterial,
   AmbientLight,
+  Group,
 })
 
 const root = createRoot(document.querySelector('canvas')!)
