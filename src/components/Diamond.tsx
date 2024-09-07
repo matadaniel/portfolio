@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { DoubleSide, Mesh, OctahedronGeometry, type PointLight } from 'three'
+import { Mesh, OctahedronGeometry, type PointLight } from 'three'
 import { useFrame } from '@react-three/fiber'
 import { Sphere } from '@react-three/drei'
+import Side from './Side'
 
 const Diamond = () => {
   const ref = useRef<Mesh>(null)
@@ -45,7 +46,18 @@ const Diamond = () => {
         </Sphere>
       </pointLight>
       <mesh geometry={geometry} ref={ref}>
-        <meshPhongMaterial transparent opacity={0.5} color="rgb(79, 79, 79)" side={DoubleSide} />
+        <Side index={0} rotation={[0, Math.PI / 4, 0]} scroll={scroll}>
+          <torusKnotGeometry args={[0.25, 0.1, 256, 16]} />
+        </Side>
+        <Side index={1} rotation={[0, (Math.PI * 3) / 4, 0]} scroll={scroll}>
+          <icosahedronGeometry args={[0.25]} />
+        </Side>
+        <Side index={2} rotation={[0, (Math.PI * 5) / 4, 0]} scroll={scroll}>
+          <boxGeometry args={[0.5, 0.5, 0.5]} />
+        </Side>
+        <Side index={3} rotation={[0, (Math.PI * 7) / 4, 0]} scroll={scroll}>
+          <torusGeometry args={[0.25, 0.1]} />
+        </Side>
       </mesh>
     </>
   )
